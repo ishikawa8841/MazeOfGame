@@ -40,8 +40,22 @@ void ABounceBlock::OnHit(class AActor* OtherActor, class UPrimitiveComponent* Ot
 	//衝突された場合の判定
 	UE_LOG(LogTemp, Log, TEXT("On Hit Call!"));
 
+	//横方向に限定して弾き返す
+	float speed = NormalImpulse.Size();
+	NormalImpulse.Z = 0;
+
+	if (speed < 1000000.0f){
+		NormalImpulse.Normalize();
+		NormalImpulse *= 1000000.0f;
+	}
+
+	//速度を０にする
+	OtherComp->SetPhysicsLinearVelocity( FVector(0, 0, 0));
+	OtherComp->SetPhysicsAngularVelocity(FVector(0, 0, 0));
+
 	//弾き返す！！
 	OtherComp->AddImpulseAtLocation(NormalImpulse * 2.0f, Hit.Location);
+
 }
 
 void ABounceBlock::OnOrverLap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
