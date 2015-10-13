@@ -44,17 +44,27 @@ void ABounceBlock::OnHit(class AActor* OtherActor, class UPrimitiveComponent* Ot
 	float speed = NormalImpulse.Size();
 	NormalImpulse.Z = 0;
 
-	if (speed < 1000000.0f){
+	//ベロシティを反射方向に導く
+	FVector velocity = OtherComp->GetComponentVelocity();
+	float power = velocity.Size();
+	if (power > 0.0f){
 		NormalImpulse.Normalize();
-		NormalImpulse *= 1000000.0f;
+		NormalImpulse = velocity + 2 * (-velocity | NormalImpulse) * NormalImpulse;
+
+		power = NormalImpulse.Size();
+		NormalImpulse.Z = 0;
+		NormalImpulse.Normalize();
+
+		NormalImpulse *= power;
+
+		OtherComp->SetPhysicsLinearVelocity(NormalImpulse);
 	}
 
-	//速度を０にする
-	OtherComp->SetPhysicsLinearVelocity( FVector(0, 0, 0));
+	//トルクを0にしてみる
 	OtherComp->SetPhysicsAngularVelocity(FVector(0, 0, 0));
 
 	//弾き返す！！
-	OtherComp->AddImpulseAtLocation(NormalImpulse * 2.0f, Hit.Location);
+	//OtherComp->AddImpulseAtLocation(NormalImpulse * 2.0f, Hit.Location);
 
 }
 
