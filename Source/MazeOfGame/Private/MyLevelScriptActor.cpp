@@ -18,20 +18,25 @@ void AMyLevelScriptActor::BeginPlay()
 	UWorld* const world = GetWorld();
 
 	//マップ内スタート位置検索
-	FVector player_start;
+	FVector  player_start;
+	FRotator player_rotate;
 	for (TActorIterator<APlayerStart> It(world); It; ++It)
 	{
 		player_start = (*It)->GetActorLocation();
+		player_rotate = (*It)->GetActorRotation();
 	}
+
+	//プレイヤをスポーンする
+	FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;			///< 作成時にコリジョンを見ないようにして作成させる（色々やったが何故か衝突して作れない）
+	APawn *pawn = static_cast<APawn*>(world->SpawnActor(AmyBallPawn::StaticClass(), &player_start, &player_rotate, params));
+	myPlayer = pawn;
 
 	//カメラを作成
 	myCamera = world->SpawnActor(AGameCameraActor::StaticClass(), &player_start);
 	//メインカメラに指定
 	world->GetFirstPlayerController()->SetViewTargetWithBlend(myCamera);
 
-	//プレイヤをスポーンする
-	APawn *pawn = static_cast<APawn*>(world->SpawnActor(AmyBallPawn::StaticClass(), &player_start));
-	myPlayer = pawn;
 }
 
 

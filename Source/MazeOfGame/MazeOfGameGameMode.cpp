@@ -4,5 +4,8 @@
 #include "MazeOfGameGameMode.h"
 
 
-
-
+AMazeOfGameGameMode::AMazeOfGameGameMode()
+{
+	//スタート時のPawnは自分で作りたいので、作らせないようにする
+	DefaultPawnClass = NULL;
+}
