@@ -20,18 +20,17 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	// Called to bind functionality to input
+	UPROPERTY(EditAnywhere)
+	USceneComponent* OurVisibleComponent;
+
+	FVector CurrentVelocity;
+
+	// コントローラの入力を割当するAPI
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 	//コントローラ入力
-	void Move_XAxis(float AxisValue);
-	void Move_YAxis(float AxisValue);
-
-	UPROPERTY(EditAnywhere)
-	USceneComponent* OurVisibleComponent;
-	UCameraComponent* m_camera;
-
-	FVector CurrentVelocity;
+	void Move_XAxis(float AxisValue);			///< 左右移動キー
+	void Move_YAxis(float AxisValue);			///< 上下移動キー
 
 	UFUNCTION()
 	void OnHit(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

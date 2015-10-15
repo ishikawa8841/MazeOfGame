@@ -12,8 +12,4 @@ UCLASS()
 class MAZEOFGAME_API AMazeOfGameGameMode : public AGameMode
 {
 	GENERATED_BODY()
-	
-	
-	
-	
 };

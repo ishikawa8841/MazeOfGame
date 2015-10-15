@@ -2,6 +2,7 @@
 
 #include "MazeOfGame.h"
 #include "Public/myBallPawn.h"
+#include "MyWorldSettings.h"
 
 
 // 操作キャラクタとなるボールの定義
@@ -15,26 +16,20 @@ AmyBallPawn::AmyBallPawn()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	// Create a dummy root component we can attach things to.(親子付け可能なダミーのルートコンポーネントを作成)
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	// Create a camera and a visible object (カメラと可視オブジェクトを作成)
-	UCameraComponent* OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
+	//スタティックコンポーネント追加
 	OurVisibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OurVisibleComponent"));
-
-	//Rootコンポーネント指定
-	//RootComponent = OurVisibleComponent;
-
-	//カメラ保存
-	m_camera = OurCamera;
-
-	// Attach our camera and visible object to our root component. (カメラと可視オブジェクトをルートコンポーネントに親子付け。カメラをオフセットして回転)
-	OurCamera->AttachTo(RootComponent);
-	OurCamera->SetRelativeLocation(FVector(-250.0f, 0.0f, 250.0f));
-	OurCamera->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
-	OurCamera->AttachTo(RootComponent);
 
 	//物理挙動をONにする
 	UStaticMeshComponent *static_mesh_component = ((UStaticMeshComponent*)OurVisibleComponent);
+
+	AMyWorldSettings *game_setting = static_cast<AMyWorldSettings*>(GetWorldSettings());
+	if (game_setting && game_setting->GetPlayerMesh()){
+		//ボール型メッシュを割当
+		static_mesh_component->SetStaticMesh(game_setting->GetPlayerMesh());
+	}
+
 	static_mesh_component->Mobility = EComponentMobility::Movable;
 	static_mesh_component->SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
 	static_mesh_component->BodyInstance.bSimulatePhysics = true;
@@ -60,21 +55,25 @@ void AmyBallPawn::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
-	{
-		UStaticMeshComponent *static_mesh_component = ((UStaticMeshComponent*)OurVisibleComponent);
+	UStaticMeshComponent *static_mesh_component = ((UStaticMeshComponent*)GetComponentByClass(UStaticMeshComponent::StaticClass()));
+	USceneComponent *RootComponent = GetRootComponent();
+
+	if (static_mesh_component){
+
+		//FVector CurrentVelocity = static_mesh_component->GetComponentVelocity();
 
 		//速度ベクトルが動いているか？
 		if (!CurrentVelocity.IsZero())
 		{
 			//移動させる
 			//FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
-			static_mesh_component->BodyInstance.SetLinearVelocity(CurrentVelocity,true);
+			static_mesh_component->BodyInstance.SetLinearVelocity(CurrentVelocity, true);
 
 		}
 		CurrentVelocity = FVector::ZeroVector;
 
 		//カメラの位置を移動させるためRootComponentの位置を同じ位置に移動させる
-		m_camera->SetWorldLocation(static_mesh_component->BodyInstance.GetCOMPosition() + FVector(-500.0f, 0.0f, 500.0f) );
+		//RootComponent->SetWorldLocation(static_mesh_component->BodyInstance.GetCOMPosition());
 
 		FVector velocity = static_mesh_component->GetComponentVelocity();
 
@@ -85,9 +84,8 @@ void AmyBallPawn::Tick( float DeltaTime )
 		if (velocity.Size() > 3000.0f){
 			velocity.Normalize();
 			velocity *= 3000.0f;
-			static_mesh_component->BodyInstance.SetLinearVelocity(velocity,false);
+			static_mesh_component->BodyInstance.SetLinearVelocity(velocity, false);
 		}
-	
 	}
 
 }
@@ -106,18 +104,26 @@ void AmyBallPawn::SetupPlayerInputComponent(class UInputComponent* InputComponen
 //コントローラ入力
 void AmyBallPawn::Move_XAxis(float AxisValue)
 {
-	FVector right_vector = m_camera->GetRightVector();
+	//テスト入力です。場合によっては自分で動かす為
+	ACameraActor* camera = dynamic_cast<ACameraActor*>(GetWorld()->GetFirstPlayerController()->GetViewTarget());
+	if (camera){
+		FVector right_vector = camera->GetCameraComponent()->GetRightVector();
 
-	// Move at 100 units per second forward or backward (1 秒間に前後へ 100 単位移動)
-	CurrentVelocity += (right_vector * FMath::Clamp(AxisValue, -1.0f, 1.0f) * 10.f );
+		// Move at 100 units per second forward or backward (1 秒間に前後へ 100 単位移動)
+		CurrentVelocity += (right_vector * FMath::Clamp(AxisValue, -1.0f, 1.0f) * 10.f);
+	}
 }
 
 void AmyBallPawn::Move_YAxis(float AxisValue)
 {
-	FVector forward_vector = m_camera->GetForwardVector();
+	//テスト入力です。場合によっては自分で動かす為
+	ACameraActor* camera = dynamic_cast<ACameraActor*>(GetWorld()->GetFirstPlayerController()->GetViewTarget());
+	if (camera){
+		FVector forward_vector = camera->GetCameraComponent()->GetForwardVector();
 
-	// Move at 100 units per second right or left (1 秒間に左右へ 100 単位移動)
-	CurrentVelocity += (forward_vector * FMath::Clamp(AxisValue, -1.0f, 1.0f) * 10.f );
+		// Move at 100 units per second right or left (1 秒間に左右へ 100 単位移動)
+		CurrentVelocity += (forward_vector * FMath::Clamp(AxisValue, -1.0f, 1.0f) * 10.f);
+	}
 }
 
 void AmyBallPawn::OnHit(class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
