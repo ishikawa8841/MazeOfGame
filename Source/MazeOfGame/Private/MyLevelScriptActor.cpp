@@ -30,12 +30,18 @@ void AMyLevelScriptActor::BeginPlay()
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;			///< 作成時にコリジョンを見ないようにして作成させる（色々やったが何故か衝突して作れない）
 	APawn *pawn = static_cast<APawn*>(world->SpawnActor(AmyBallPawn::StaticClass(), &player_start, &player_rotate, params));
-	myPlayer = pawn;
+	m_Player = pawn;
 
 	//カメラを作成
-	myCamera = world->SpawnActor(AGameCameraActor::StaticClass(), &player_start);
+	m_Camera = (AGameCameraActor*)world->SpawnActor(AGameCameraActor::StaticClass(), &player_start);
+
+	//カメラ距離指定
+	m_Camera->SetOffsetFromTarget( FVector(1200, 1200, 500) );
+	m_Camera->SetTarget(m_Player);
+
 	//メインカメラに指定
-	world->GetFirstPlayerController()->SetViewTargetWithBlend(myCamera);
+	world->GetFirstPlayerController()->SetViewTargetWithBlend(m_Camera);
+
 
 }
 
@@ -50,6 +56,6 @@ void AMyLevelScriptActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	myCamera = NULL;
-	myPlayer = NULL;
+	m_Camera = NULL;
+	m_Player = NULL;
 }

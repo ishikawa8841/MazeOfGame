@@ -5,6 +5,8 @@
 #include "Engine/LevelScriptActor.h"
 #include "MyLevelScriptActor.generated.h"
 
+class AGameCameraActor;
+
 /**
  * 
  */
@@ -13,8 +15,8 @@ class MAZEOFGAME_API AMyLevelScriptActor : public ALevelScriptActor
 {
 	GENERATED_BODY()
 
-	AActor *myPlayer;
-	AActor *myCamera;
+	AActor *m_Player;
+	AGameCameraActor *m_Camera;
 
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaSeconds) override;
