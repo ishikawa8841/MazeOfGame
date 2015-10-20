@@ -36,7 +36,7 @@ void AMyLevelScriptActor::BeginPlay()
 	m_Camera = (AGameCameraActor*)world->SpawnActor(AGameCameraActor::StaticClass(), &player_start);
 
 	//カメラ距離指定
-	m_Camera->SetOffsetFromTarget( FVector(1200, 1200, 500) );
+	m_Camera->SetOffsetFromTarget( FVector(1200, 1200, 0) );
 	m_Camera->SetTarget(m_Player);
 
 	//メインカメラに指定

@@ -19,9 +19,13 @@ class MAZEOFGAME_API AMyWorldSettings : public AWorldSettings
 	UPROPERTY(EditAnywhere, Category = BallSetting)
 	UStaticMesh *m_PlayerCollisionMesh;
 
+	UPROPERTY(EditAnywhere, Category = UISetting)
+	UFont *m_UIFont;
+
 public:
 	UStaticMesh *GetPlayerMesh(){ return m_PlayerMesh; }
 	UStaticMesh *GetPlayerCollisionMesh(){ return m_PlayerCollisionMesh; }
+	UFont *GetUIFont(){ return m_UIFont; }
 
 	
 	

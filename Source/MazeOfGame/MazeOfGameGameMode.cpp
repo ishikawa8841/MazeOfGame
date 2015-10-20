@@ -2,10 +2,14 @@
 
 #include "MazeOfGame.h"
 #include "MazeOfGameGameMode.h"
+#include "MyHUD.h"
 
 
 AMazeOfGameGameMode::AMazeOfGameGameMode()
 {
 	//スタート時のPawnは自分で作りたいので、作らせないようにする
 	DefaultPawnClass = NULL;
+		
+	//HUDも自分のもので置き換えする
+	HUDClass = AMyHUD::StaticClass();
 }
