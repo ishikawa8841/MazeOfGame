@@ -10,6 +10,17 @@ class MAZEOFGAME_API AmyBallPawn : public APawn
 {
 	GENERATED_BODY()
 
+public:			
+	enum PLAYER_CONTROL_MODE {
+		PLAYER_CONTROL_MODE_NONE,			//コントロール出来ないモード
+		PLAYER_CONTROL_MODE_IPACT_SELECT,	//HUDを介して打撃コントロール状態
+	};
+
+	void SetControlMode(PLAYER_CONTROL_MODE mode);
+
+private:
+	PLAYER_CONTROL_MODE m_controlmode;		//コントロールモード
+
 public:
 	// Sets default values for this pawn's properties
 	AmyBallPawn();

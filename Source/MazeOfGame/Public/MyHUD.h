@@ -16,4 +16,12 @@ class MAZEOFGAME_API AMyHUD : public AHUD
 	//•`‰ææ‚Áæ‚è			
 	virtual void DrawHUD();
 
+	float m_cursolX;
+	float m_cursolY;
+public:
+	void SetCursolX(float x){ m_cursolX = x; }
+	void SetCursolY(float y){ m_cursolY = y; }
+	const float GetCursolX(){ return m_cursolX; }
+	const float GetCursolY(){ return m_cursolY; }
+
 };

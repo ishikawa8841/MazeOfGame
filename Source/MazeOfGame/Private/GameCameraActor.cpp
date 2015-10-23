@@ -18,21 +18,11 @@ void AGameCameraActor::Tick(float DeltaSeconds)
 	FVector currentCameraPos = this->GetActorLocation();
 
 	//現在位置計算
-	targetCameraPos = (targetCameraPos * 0.5f) + (currentCameraPos * 0.5f);
-
-	//カメラの向きを計算する
-	FVector camVec(lookAtPos-targetCameraPos);
-	camVec.Normalize();
-	FQuat camQRot = FQuat::FindBetween(FVector::ForwardVector, camVec);
-
-	//アップベクトルの固定化
-	FVector upVector = camQRot.RotateVector(FVector::UpVector);
-	FQuat   upRot = FQuat::FindBetween(upVector,FVector::UpVector);
-	camQRot = upRot * camQRot;
+	targetCameraPos = (targetCameraPos * 0.1f) + (currentCameraPos * 0.9f);
 
 	//位置を更新
+	this->SetActorRotation( (lookAtPos - targetCameraPos).Rotation() );
 	this->GetRootComponent()->SetWorldLocation(targetCameraPos);
-	this->GetRootComponent()->SetWorldRotation(camQRot);
 
 }
 

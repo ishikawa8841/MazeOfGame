@@ -18,5 +18,8 @@ void AMyHUD::DrawHUD()
 	FColor TextColor(255,255,255);
 	DrawText(Text, Position, TextFont, FontScale, TextColor);
 
+	//” •\Ž¦
+	DrawRect(FLinearColor(1, 1, 1), 0, 0, 100, 100);
+
 }
 

@@ -3,6 +3,7 @@
 #include "MazeOfGame.h"
 #include "MazeOfGameGameMode.h"
 #include "MyHUD.h"
+#include "GamePlayerController.h"
 
 
 AMazeOfGameGameMode::AMazeOfGameGameMode()
@@ -12,4 +13,6 @@ AMazeOfGameGameMode::AMazeOfGameGameMode()
 		
 	//HUDも自分のもので置き換えする
 	HUDClass = AMyHUD::StaticClass();
+	PlayerControllerClass = AGamePlayerController::StaticClass();
+
 }

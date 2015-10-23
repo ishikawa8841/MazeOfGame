@@ -9,7 +9,10 @@
 // コントローラにより物理挙動の変更を行う
 AmyBallPawn::AmyBallPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	//プレイヤの状態初期化
+	m_controlmode = PLAYER_CONTROL_MODE_IPACT_SELECT;
+	
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set this pawn to be controlled by the lowest-numbered player (このポーンが最小値のプレイヤーで制御されるように設定)
@@ -87,7 +90,6 @@ void AmyBallPawn::Tick( float DeltaTime )
 			static_mesh_component->BodyInstance.SetLinearVelocity(velocity, false);
 		}
 	}
-
 }
 
 // Called to bind functionality to input
@@ -135,3 +137,8 @@ void AmyBallPawn::OnOrverLap(class AActor* OtherActor, class UPrimitiveComponent
 {
 
 }
+
+void AmyBallPawn::SetControlMode(PLAYER_CONTROL_MODE mode)
+{
+}
+
